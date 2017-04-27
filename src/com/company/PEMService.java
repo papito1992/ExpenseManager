@@ -1,18 +1,16 @@
 package com.company;
 
 import java.io.IOException;
-import java.util.Date;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
-public class PEMService extends MenuInputChecker  {
+public class PEMService {
     Repository repo = Repository.getRepository();
-
+    ReportService reportService = new ReportService();
     private Scanner in = new Scanner(System.in);
     private int choice;
 
 
-    public void showMenu()  {
+    public void showMenu() {
 
         while (true) {
 
@@ -36,6 +34,7 @@ public class PEMService extends MenuInputChecker  {
                     pressAnyKeyToContinue();
                     break;
                 case 5:
+
                     monthlyExpenseList();
                     pressAnyKeyToContinue();
                     break;
@@ -78,7 +77,19 @@ public class PEMService extends MenuInputChecker  {
     }
 
     private void monthlyExpenseList() {
-        System.out.println("Monthly expenses");
+        System.out.println("Total Monthly expenses");
+        Map<String, Float> resultMap = reportService.calculateMonthlyTotal();
+        Set<String> keys = resultMap.keySet();
+        for (String yearMonth : keys) {
+            //2016.01
+            String[] arr = yearMonth.split("/");
+            String year = arr[0];
+            Integer monthNo = new Integer(arr[1]);
+            String monthName = DataUtil.getMonthName(monthNo);
+
+            System.out.println(year + ", " + monthName + " : " + resultMap.get(yearMonth));
+
+        }
     }
 
     private void expenseList() {
@@ -88,7 +99,7 @@ public class PEMService extends MenuInputChecker  {
             Expense expense = expenseList.get(i);
             String catName = getCategoryNameById(expense.getCategoryId());
             String dateAsString = DataUtil.dateToString(expense.getDate());
-            System.out.println((i + 1) + ". " + catName + ", " + expense.getAmount() + ", " + expense.getRemark() + ", " +dateAsString);
+            System.out.println((i + 1) + ". " + catName + ", " + expense.getAmount() + ", " + expense.getRemark() + ", " + dateAsString);
 
         }
     }
